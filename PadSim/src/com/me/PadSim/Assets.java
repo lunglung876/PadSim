@@ -20,8 +20,10 @@ public class Assets {
     	text.setFilter(TextureFilter.Linear, TextureFilter.Linear);
     	sprite_green = new Sprite(text,5,5,50,50);
     	sprite_green.flip(false, true);
+    	sprite_green.setScale((float) 1.5);
     	sprite_yellow = new Sprite(text,5,65,50,50);
     	sprite_yellow.flip(false, true);
+    	sprite_yellow.setScale((float) 1.5);
     	sprite_blue = new Sprite(text,65,5,50,50);
     	sprite_blue.flip(false, true);
     	sprite_red = new Sprite(text,65,65,50,50);

@@ -1,7 +1,10 @@
 package com.me.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,8 +13,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.me.PadSim.*;
 
-public class GameScreen implements Screen{
-
+public class GameScreen implements Screen, InputProcessor{
+	int picked_x = -1;
+	int picked_y = -1;
+	int drag = 0;
     OrthographicCamera camera;
     private PadSim game;
     SpriteBatch batch;
@@ -22,6 +27,7 @@ public class GameScreen implements Screen{
     	camera.setToOrtho(true,720,1280);
     	batch = new SpriteBatch();
     	board = new Board();
+    	Gdx.input.setInputProcessor(this);
     }
     
     public void render(float delta) {
@@ -34,23 +40,75 @@ public class GameScreen implements Screen{
     	batch.begin();
 		for (int x =0; x<6; x++) {
 			for (int y =0; y<5; y++){
-				switch(board.getColor(x,y)){
-				case 0: batch.draw(Assets.sprite_red, 50*x,50*y);
-				break;
-				case 1: batch.draw(Assets.sprite_blue, 50*x,50*y);
-				break;
-				case 2: batch.draw(Assets.sprite_green, 50*x,50*y);
-				break;
-				case 3: batch.draw(Assets.sprite_yellow, 50*x,50*y);
-				break;
-				case 4: batch.draw(Assets.sprite_purple, 50*x,50*y);
-				break;
-				case 5: batch.draw(Assets.sprite_pink, 50*x,50*y);
-				break;
+				if (x== picked_x && y==picked_y){
+					batch.setColor(1f,1f,1f,.5f);
 				}
+				switch(board.getColor(x,y)){
+					case 0: batch.draw(Assets.sprite_red, 60+100*x,700+100*y,100,100);
+					break;
+					case 1: batch.draw(Assets.sprite_blue, 60+100*x,700+100*y,100,100);
+					break;
+					case 2: batch.draw(Assets.sprite_green, 60+100*x,700+100*y,100,100);
+					break;
+					case 3: batch.draw(Assets.sprite_yellow, 60+100*x,700+100*y,100,100);
+					break;
+					case 4: batch.draw(Assets.sprite_purple, 60+100*x,700+100*y,100,100);
+					break;
+					case 5: batch.draw(Assets.sprite_pink, 60+100*x,700+100*y,100,100);
+					break;
+				}
+				batch.setColor(1f,1f,1f,1f);
 				
+				/*else{
+					switch(board.getColor(x,y)){
+					case 0: batch.draw(Assets.sprite_red, 60+100*x,700+100*y,100,100);
+					break;
+					case 1: batch.draw(Assets.sprite_blue, 60+100*x,700+100*y,100,100);
+					break;
+					case 2: batch.draw(Assets.sprite_green, 60+100*x,700+100*y,100,100);
+					break;
+					case 3: batch.draw(Assets.sprite_yellow, 60+100*x,700+100*y,100,100);
+					break;
+					case 4: batch.draw(Assets.sprite_purple, 60+100*x,700+100*y,100,100);
+					break;
+					case 5: batch.draw(Assets.sprite_pink, 60+100*x,700+100*y,100,100);
+					break;
+					}
+				}*/
 			}
 		}
+		if(drag == 1){
+	        int PosX = Gdx.input.getX()-50;
+	        int PosY = Gdx.input.getY();
+			switch(board.getColor(picked_x,picked_y)){
+			case 0: batch.draw(Assets.sprite_red, PosX,PosY,100,100);
+			break;
+			case 1: batch.draw(Assets.sprite_blue, PosX,PosY,100,100);
+			break;
+			case 2: batch.draw(Assets.sprite_green, PosX,PosY,100,100);
+			break;
+			case 3: batch.draw(Assets.sprite_yellow, PosX,PosY,100,100);
+			break;
+			case 4: batch.draw(Assets.sprite_purple,PosX,PosY,100,100);
+			break;
+			case 5: batch.draw(Assets.sprite_pink, PosX,PosY,100,100);
+			break;
+			}
+	       /*switch(board.getColor(picked_x,picked_y)){
+			case 0: batch.draw(Assets.sprite_red, -100+60+PosX+(picked_x*20),-50+300+PosY+(picked_y*25),100,100);
+			break;
+			case 1: batch.draw(Assets.sprite_blue, -100+60+PosX+(picked_x*20),-50+300+PosY+(picked_y*25),100,100);
+			break;
+			case 2: batch.draw(Assets.sprite_green, -100+60+PosX+(picked_x*20),-50+300+PosY+(picked_y*25),100,100);
+			break;
+			case 3: batch.draw(Assets.sprite_yellow, -100+60+PosX+(picked_x*20),-50+300+PosY+(picked_y*25),100,100);
+			break;
+			case 4: batch.draw(Assets.sprite_purple, -100+60+PosX+(picked_x*20),-50+300+PosY+(picked_y*25),100,100);
+			break;
+			case 5: batch.draw(Assets.sprite_pink, -100+60+PosX+(picked_x*20),-50+300+PosY+(picked_y*25),100,100);
+			break;
+			}*/
+	    }
     	batch.end();
         
     }
@@ -85,4 +143,63 @@ public class GameScreen implements Screen{
         // Leave blank
     }
 
+    public boolean keyDown (int keycode) {
+        return false;
+     }
+
+     @Override
+     public boolean keyUp (int keycode) {
+        return false;
+     }
+
+     @Override
+     public boolean keyTyped (char character) {
+        return false;
+     }
+
+     @Override
+     public boolean touchDown (int x, int y, int pointer, int button) {
+    	 if (drag == 0){
+    		int PosX = Gdx.input.getX();
+    		int PosY = Gdx.input.getY();
+    		/*picked_x = (PosX-50)/82;
+    		picked_y = (PosY-435)/65;*/
+    		picked_x = (PosX-60)/100;
+    		picked_y = (PosY-670)/100;		
+    	 }
+    	 drag = 1;
+    	 return true;
+    		 
+     }
+
+     @Override
+     public boolean touchUp (int x, int y, int pointer, int button) {
+        drag = 0;
+        picked_x = -1;
+        picked_y = -1;
+        return true;
+     }
+
+     @Override
+     public boolean touchDragged (int x, int y, int pointer) {
+    	drag = 1;
+    	
+        return true;
+     }
+
+     public boolean touchMoved (int x, int y) {
+        return false;
+     }
+
+     @Override
+     public boolean scrolled (int amount) {
+        return false;
+     }
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+  
 }
