@@ -8,20 +8,20 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.me.PadSim.Assets;
-import com.me.PadSim.PadSim;
+import com.me.PadSim.*;
 
 public class GameScreen implements Screen{
 
     OrthographicCamera camera;
     private PadSim game;
     SpriteBatch batch;
+    Board board;
     public GameScreen(PadSim game){
     	this.game = game;
     	camera =  new OrthographicCamera();
-    	camera.setToOrtho(true,1280,800);
+    	camera.setToOrtho(true,720,1280);
     	batch = new SpriteBatch();
-
+    	board = new Board();
     }
     
     public void render(float delta) {
@@ -32,9 +32,25 @@ public class GameScreen implements Screen{
     	camera.update();
     	batch.setProjectionMatrix(camera.combined);
     	batch.begin();
-    	
-    	batch.draw(Assets.sprite, 50,50);
-    	
+		for (int x =0; x<6; x++) {
+			for (int y =0; y<5; y++){
+				switch(board.getColor(x,y)){
+				case 0: batch.draw(Assets.sprite_red, 50*x,50*y);
+				break;
+				case 1: batch.draw(Assets.sprite_blue, 50*x,50*y);
+				break;
+				case 2: batch.draw(Assets.sprite_green, 50*x,50*y);
+				break;
+				case 3: batch.draw(Assets.sprite_yellow, 50*x,50*y);
+				break;
+				case 4: batch.draw(Assets.sprite_purple, 50*x,50*y);
+				break;
+				case 5: batch.draw(Assets.sprite_pink, 50*x,50*y);
+				break;
+				}
+				
+			}
+		}
     	batch.end();
         
     }
