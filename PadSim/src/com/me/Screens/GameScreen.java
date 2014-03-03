@@ -1,5 +1,7 @@
 package com.me.Screens;
 
+import java.lang.reflect.Array;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -23,6 +25,7 @@ public class GameScreen implements Screen, InputProcessor{
     private PadSim game;
     SpriteBatch batch;
     Board board;
+    int[][] clear_board = new int[6][5];
     public GameScreen(PadSim game){
     	this.game = game;
     	camera =  new OrthographicCamera();
@@ -30,6 +33,7 @@ public class GameScreen implements Screen, InputProcessor{
     	batch = new SpriteBatch();
     	board = new Board();
     	Gdx.input.setInputProcessor(this);
+    	
     }
     
     public void render(float delta) {
@@ -176,21 +180,52 @@ public class GameScreen implements Screen, InputProcessor{
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
 	public void check_clear(){
 		int count;
-		for (int i = 0; i < 4; i++){
-			count = board.check_row(i, 0, 0, 0);
-			System.out.println(count);
-			if (count > 1)
-			{
-				i = i + count -1;
+		for (int k = 0; k < 5; k++){			
+			for (int i = 0; i < 4; i++){
+				count = board.check_row(i, k, 0, 0);
+				if (count > 2){
+					for (int j = 0;j < count;j++){
+						clear_board[j+i][k] = board.getColor(j+i, k)+1;
+					}
+				}
+				if (count > 1){
+					i = i + count -1;
+				}
 			}
 		}
+		count = 0;
+		for (int k = 0; k < 6; k++){			
+			for (int i = 0; i < 3; i++){
+				count = board.check_column(k, i, 0, 0);
+				if (k ==0){
+					//System.out.println(count);
+				}
+				if (count > 2){
+					for (int j = 0;j < count;j++){
+						clear_board[k][j+i] = board.getColor(k, j+i)+1;
+					}
+				}
+				if (count > 1){
+					i = i + count -1;
+				}
+				
+			}
+			
+		}
+		
+		for (int c = 0; c<5 ;c++){
+			System.out.println(""+clear_board[0][c]+clear_board[1][c]+clear_board[2][c]+clear_board[3][c]+clear_board[4][c]+clear_board[5][c]);
+		}
+		clear_board = new int[6][5];
 	}
+	
+	
+	
 	
   
 }
