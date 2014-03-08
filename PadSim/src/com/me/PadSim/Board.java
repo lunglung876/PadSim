@@ -1,10 +1,19 @@
 package com.me.PadSim;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 
 public class Board {
+	
+
+	
 	private Orb[][] Orbs;
+	private Set clear_sets;
 	public Board(){
 		Orbs = new Orb[6][5];
+		clear_sets = new HashSet();
 		for (int x =0; x<6; x++) {
 			for (int y =0; y<5; y++){
 				Orb orb = new Orb();

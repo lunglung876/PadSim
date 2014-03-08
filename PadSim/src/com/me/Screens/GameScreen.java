@@ -1,6 +1,9 @@
 package com.me.Screens;
 
 import java.lang.reflect.Array;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -16,6 +19,46 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.me.PadSim.*;
 
 public class GameScreen implements Screen, InputProcessor{
+	
+	class Coord{
+	    private int X;
+	    private int Y;
+
+	    public Coord() {
+	        this(0,0);
+	    }        
+	    public Coord(int X, int Y) {
+	        this.X = X;
+	        this.Y = Y;
+	    }
+	    public int getX() {
+	        return X;
+	    }
+	    public int getY() {
+	        return Y;
+	    }
+	    public void setX(int X) {
+	        this.X = X;
+	    }
+	    public void setY(int Y) {
+	        this.Y = Y;
+	    }
+		public boolean equals(Object other)
+		{
+		   if(this.X == ((Coord)other).X && this.Y == ((Coord)other).Y){
+			   return true;
+		   }
+		   else
+		   {
+			   return false;
+		   }
+		}
+		
+		public int hashCode(){
+			return this.X+this.Y;//for simplicity reason
+		}
+	}
+	
 	int picked_x = -1;
 	int picked_y = -1;
 	int origin_x;
@@ -221,10 +264,61 @@ public class GameScreen implements Screen, InputProcessor{
 		for (int c = 0; c<5 ;c++){
 			System.out.println(""+clear_board[0][c]+clear_board[1][c]+clear_board[2][c]+clear_board[3][c]+clear_board[4][c]+clear_board[5][c]);
 		}
+		Set<Set<Coord>> combo_set = new HashSet<Set<Coord>>();
+		combo_set = combo();
+		int combo = combo_set.size();
+		System.out.println("Number of Combos:"+ combo);
 		clear_board = new int[6][5];
 	}
 	
+	public Set<Set<Coord>> combo(){
+		Set<Set<Coord>> combo_set = new HashSet<Set<Coord>>();
+		for (int x = 0; x <6; x++){
+			for (int y = 0; y<5; y++){
+				Coord coord = new Coord(x,y);
+				Iterator<Set<Coord>> c = combo_set.iterator();
+				int exists = 0;
+				while(c.hasNext()){
+					Set<Coord> item = c.next();
+					if(item.contains(coord)){
+						exists = 1;
+					}
+				}
+				if(clear_board[x][y] != 0 && exists == 0){
+					Set<Coord> SetA = new HashSet<Coord>();
+					combo_set.add(check_combo(x,y,SetA,clear_board[x][y]));
+					Iterator<Set<Coord>> t = combo_set.iterator();
+					while(t.hasNext()){
+						Set<Coord> item = t.next();
+						Iterator<Coord> k = item.iterator();
+						while(k.hasNext()){
+							Coord co = k.next();
+							System.out.println(""+co.getX()+","+co.getY());
+						}
+					}
+				}
+			}
+		}
+		return combo_set;
+	}
 	
+	private Set<Coord> check_combo(int x, int y, Set<Coord> SetA, int color){
+		Coord coord = new Coord(x,y);
+		if (SetA.isEmpty()){
+			SetA.add(coord);
+			check_combo(x+1,y,SetA, color);
+			check_combo(x,y+1,SetA, color);
+		}
+		else if (x <6 && y<5){
+			if(clear_board[x][y] == color){
+				SetA.add(coord);
+				check_combo(x+1,y,SetA, color);
+				check_combo(x,y+1,SetA, color);
+			}
+		}
+		return SetA;
+	}
+
 	
 	
   
